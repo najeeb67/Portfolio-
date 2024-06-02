@@ -57,3 +57,42 @@ window.addEventListener('DOMContentLoaded', event => {
     });
 
 });
+document.addEventListener('DOMContentLoaded', event => {
+    // Existing code...
+
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const message = document.getElementById('message').value;
+
+        fetch('/api/contact/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                phone: phone,
+                message: message,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.id) {
+                document.getElementById('submitSuccessMessage').classList.remove('d-none');
+                contactForm.reset();
+            } else {
+                document.getElementById('submitErrorMessage').classList.remove('d-none');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById('submitErrorMessage').classList.remove('d-none');
+        });
+    });
+});
